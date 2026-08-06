@@ -1,0 +1,155 @@
+/* Gesture Launcher Main Stylesheet (Modern GNOME / LibAdwaita Aesthetic) */
+
+QMainWindow, QWidget {
+    background-color: #1e1e2e;
+    color: #cdd6f4;
+    font-family: "Ubuntu", "Inter", "Segoe UI", sans-serif;
+    font-size: 14px;
+}
+
+/* Header & Titles */
+QLabel#HeaderTitle {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f5e0dc;
+}
+
+QLabel#Subtitle {
+    font-size: 13px;
+    color: #a6adc8;
+}
+
+QLabel#SectionTitle {
+    font-size: 16px;
+    font-weight: bold;
+    color: #89b4fa;
+}
+
+/* Cards & Frames */
+QFrame#CardFrame {
+    background-color: #24273a;
+    border: 1px solid #363a4f;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+QFrame#CardFrame:hover {
+    border: 1px solid #89b4fa;
+    background-color: #2a2e45;
+}
+
+/* Buttons */
+QPushButton {
+    background-color: #313244;
+    color: #cdd6f4;
+    border: 1px solid #45475a;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+}
+
+QPushButton:hover {
+    background-color: #45475a;
+    border: 1px solid #585b70;
+}
+
+QPushButton:pressed {
+    background-color: #585b70;
+}
+
+QPushButton#PrimaryButton {
+    background-color: #89b4fa;
+    color: #11111b;
+    border: none;
+    font-weight: bold;
+}
+
+QPushButton#PrimaryButton:hover {
+    background-color: #b4befe;
+}
+
+QPushButton#DangerButton {
+    background-color: #f38ba8;
+    color: #11111b;
+    border: none;
+    font-weight: bold;
+}
+
+QPushButton#DangerButton:hover {
+    background-color: #eba0ac;
+}
+
+QPushButton#FilterButton {
+    background-color: #24273a;
+    color: #a6adc8;
+    border: 1px solid #363a4f;
+    border-radius: 16px;
+    padding: 6px 14px;
+}
+
+QPushButton#FilterButton:checked {
+    background-color: #89b4fa;
+    color: #11111b;
+    border: 1px solid #89b4fa;
+    font-weight: bold;
+}
+
+/* Inputs & Search */
+QLineEdit {
+    background-color: #181825;
+    color: #cdd6f4;
+    border: 1px solid #363a4f;
+    border-radius: 8px;
+    padding: 8px 12px;
+    selection-background-color: #89b4fa;
+}
+
+QLineEdit:focus {
+    border: 1px solid #89b4fa;
+}
+
+/* Status Badges */
+QLabel#BadgeConfigured {
+    background-color: #a6e3a1;
+    color: #11111b;
+    border-radius: 10px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+QLabel#BadgeEmpty {
+    background-color: #45475a;
+    color: #bac2de;
+    border-radius: 10px;
+    padding: 2px 10px;
+    font-size: 11px;
+}
+
+/* Scroll Area */
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background: #181825;
+    width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #45475a;
+    border-radius: 4px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #585b70;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    border: none;
+    background: none;
+}

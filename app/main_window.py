@@ -10,9 +10,7 @@ from app.pages.settings_page import SettingsPage
 from app.repository.gesture_repository import GestureRepository
 from app.repository.settings_repository import SettingsRepository
 from app.services.application_service import ApplicationService
-from app.services.background_service import BackgroundService
 from app.services.gesture_service import GestureService
-from app.services.shortcut_service import ShortcutService
 
 
 class MainWindow(QMainWindow):
@@ -34,8 +32,6 @@ class MainWindow(QMainWindow):
 
         self.application_service = ApplicationService(self.gesture_repo)
         self.gesture_service = GestureService(self.gesture_repo)
-        self.shortcut_service = ShortcutService(self.settings_repo)
-        self.background_service = BackgroundService(self.settings_repo)
 
     def _initialize_window(self) -> None:
         self.setWindowTitle("Gesture Launcher")
@@ -56,8 +52,6 @@ class MainWindow(QMainWindow):
         self.nav_controller = NavigationController(self)
 
         self.settings_page = SettingsPage(
-            shortcut_service=self.shortcut_service,
-            background_service=self.background_service,
             nav_controller=self.nav_controller,
         )
 

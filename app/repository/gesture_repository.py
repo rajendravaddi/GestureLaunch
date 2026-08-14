@@ -78,6 +78,9 @@ class GestureRepository:
     def get_by_id(self, gesture_id: str) -> Optional[Gesture]:
         return self._gestures.get(gesture_id)
 
+    def get_all(self) -> list[Gesture]:
+        return list(self._gestures.values())
+
     def save(self, gesture: Gesture) -> None:
         self._gestures[gesture.id] = gesture
         self._save()

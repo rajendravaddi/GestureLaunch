@@ -62,7 +62,7 @@ class GestureCanvas(QWidget):
             self._playback_timer.stop()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        if self.readonly or event.button() != Qt.MouseButton.LeftButton:
+        if self.readonly or event.button() != Qt.MouseButton.LeftButton or self.strokes:
             return
 
         w, h = self.width(), self.height()
@@ -90,6 +90,7 @@ class GestureCanvas(QWidget):
 
         if self.current_stroke:
             self.current_stroke = None
+            self.readonly = True  # Enforce single stroke limit per drawing session
             self.gestureRecorded.emit(self.strokes)
             self.update()
 
@@ -100,10 +101,10 @@ class GestureCanvas(QWidget):
         w, h = self.width(), self.height()
 
         # Canvas background grid/border
-        painter.fillRect(self.rect(), QColor("#181825"))
+        painter.fillRect(self.rect(), QColor("#f8fafc"))
 
         # Subtle crosshair pattern
-        painter.setPen(QPen(QColor("#313244"), 1, Qt.PenStyle.DashLine))
+        painter.setPen(QPen(QColor("#e2e8f0"), 1, Qt.PenStyle.DashLine))
         painter.drawLine(int(w / 2), 0, int(w / 2), h)
         painter.drawLine(0, int(h / 2), w, int(h / 2))
 
@@ -114,15 +115,15 @@ class GestureCanvas(QWidget):
             self._draw_strokes(painter, w, h)
 
         if not self.strokes and not self._playback_timer.isActive():
-            painter.setPen(QColor("#6c7086"))
-            msg = "Click & Drag here to draw gesture" if not self.readonly else "No gesture recorded"
+            painter.setPen(QColor("#64748b"))
+            msg = "Draw gesture using the mouse/cursor" if not self.readonly else "No gesture created"
             painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, msg)
 
     def _draw_strokes(self, painter: QPainter, w: float, h: float) -> None:
         # Glow outer stroke
-        glow_pen = QPen(QColor(137, 180, 250, 60), 10, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
+        glow_pen = QPen(QColor(37, 99, 235, 40), 10, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
         # Main vibrant inner stroke
-        main_pen = QPen(QColor("#89b4fa"), 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
+        main_pen = QPen(QColor("#2563eb"), 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
 
         for stroke in self.strokes:
             if len(stroke.points) < 2:
@@ -141,7 +142,7 @@ class GestureCanvas(QWidget):
 
             # Draw start point marker
             start = stroke.points[0]
-            painter.setBrush(QColor("#a6e3a1"))
+            painter.setBrush(QColor("#16a34a"))
             painter.setPen(Qt.PenStyle.NoPen)
             painter.drawEllipse(QPointF(start.x * w, start.y * h), 5, 5)
 
@@ -156,15 +157,15 @@ class GestureCanvas(QWidget):
             path.lineTo(pt.x * w, pt.y * h)
 
         # Glow outer stroke
-        painter.setPen(QPen(QColor(249, 226, 175, 80), 12, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
+        painter.setPen(QPen(QColor(217, 119, 6, 50), 12, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
         painter.drawPath(path)
 
-        # Vibrant gold playback stroke
-        painter.setPen(QPen(QColor("#f9e2af"), 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
+        # Vibrant amber playback stroke
+        painter.setPen(QPen(QColor("#d97706"), 4, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
         painter.drawPath(path)
 
         # Lead point animation dot
         lead = pts[-1]
-        painter.setBrush(QColor("#fab387"))
+        painter.setBrush(QColor("#ea580c"))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawEllipse(QPointF(lead.x * w, lead.y * h), 7, 7)

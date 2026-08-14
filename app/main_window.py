@@ -70,12 +70,12 @@ class MainWindow(QMainWindow):
             nav_controller=self.nav_controller,
         )
 
-        # Add to stack in index order (0=Settings, 1=Apps, 2=AppDetails, 3=Help)
-        self.page_stack.addWidget(self.settings_page)
+        # Add to stack in index order (0=Applications, 1=ApplicationDetails, 2=Settings, 3=Help)
         self.page_stack.addWidget(self.applications_page)
         self.page_stack.addWidget(self.application_page)
+        self.page_stack.addWidget(self.settings_page)
         self.page_stack.addWidget(self.help_page)
 
     def _setup_navigation(self) -> None:
-        # Default start page is Settings page
-        self.nav_controller.go_to_settings()
+        # Default start page is Applications page
+        self.nav_controller.go_to_applications()

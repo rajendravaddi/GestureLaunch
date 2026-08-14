@@ -2,7 +2,7 @@ import shutil
 import subprocess
 
 
-def send_desktop_notification(title: str, message: str, icon_name: str = "gesture-launcher") -> bool:
+def send_desktop_notification(title: str, message: str, icon_name: str = "gesture-launch") -> bool:
     """Sends a desktop notification using Linux notify-send."""
     notify_send_path = shutil.which("notify-send")
     if not notify_send_path:
@@ -11,7 +11,7 @@ def send_desktop_notification(title: str, message: str, icon_name: str = "gestur
     try:
         cmd = [
             notify_send_path,
-            "--app-name=Gesture Launcher",
+            "--app-name=Gesture Launch",
             f"--icon={icon_name}",
             title,
             message,

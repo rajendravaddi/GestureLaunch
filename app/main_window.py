@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         self.gesture_service = GestureService(self.gesture_repo)
 
     def _initialize_window(self) -> None:
-        self.setWindowTitle("Gesture Launcher")
+        self.setWindowTitle("Gesture Launch")
         self.resize(1100, 750)
         self.setMinimumSize(900, 600)
 

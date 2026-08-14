@@ -111,7 +111,7 @@ class GestureOverlayWindow(QWidget):
         painter.drawText(
             banner_rect,
             Qt.AlignmentFlag.AlignCenter,
-            "✨ Gesture Launcher — Draw Gesture on Screen (ESC to Cancel)",
+            "✨ Gesture Launch — Draw Gesture on Screen (ESC to Cancel)",
         )
 
         w, h = self.width(), self.height()

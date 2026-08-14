@@ -1,6 +1,6 @@
-# Gesture Launcher 🚀
+# Gesture Launch 🚀
 
-**Gesture Launcher** is a modern desktop application for Ubuntu/Linux that allows users to launch applications using custom drawn gestures. Powered by PySide6 and the $1 Unistroke Gesture Recognition algorithm, Gesture Launcher captures mouse/touchpad gesture paths on a transparent system overlay.
+**Gesture Launch** is a modern desktop application for Ubuntu/Linux that allows users to launch applications using custom drawn gestures. Powered by PySide6 and the $1 Unistroke Gesture Recognition algorithm, Gesture Launch captures mouse/touchpad gesture paths on a transparent system overlay.
 
 ---
 
@@ -28,7 +28,7 @@ GestureLaunch/
 │   ├── widgets/           # Reusable Qt widgets (Canvas, Cards, Overlay, Toggle Switch)
 │   ├── main_window.py     # Main application window & navigation frame
 │   └── navigation.py      # Stacked widget page navigation controller
-├── daemon.py              # On-demand gesture overlay launcher
+├── gesture_launch_service.py              # On-demand gesture overlay launcher
 ├── main.py                # Main GUI entry point
 ├── pyproject.toml         # Project dependencies and configuration
 └── README.md
@@ -42,7 +42,7 @@ GestureLaunch/
 
 - **OS**: Ubuntu / Linux with GNOME Desktop
 - **Python**: Python 3.10+
-- **Tooling**: [`uv`](https://github.com/astral-sh/uv) (recommended) or `pip`
+- **Tooling**: [`uv`](https://github.com/astral-sh/uv)
 
 ### Step-by-Step Setup
 
@@ -67,7 +67,7 @@ GestureLaunch/
 ## How to Use
 
 1. **Enable Keybinding**:
-   - Open Gesture Launcher settings.
+   - Open Gesture Launch settings.
    - Toggle **Gesture Launch service** to **ON**.
    - This registers `Ctrl + Shift + G` in GNOME system settings.
 

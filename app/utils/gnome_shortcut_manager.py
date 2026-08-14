@@ -4,9 +4,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 PYTHON = PROJECT_ROOT / ".venv" / "bin" / "python"
-DAEMON_SCRIPT = PROJECT_ROOT / "daemon.py"
+SERVICE_SCRIPT = PROJECT_ROOT / "gesture_launch_service.py"
 
-SHORTCUT_ID = "gesture-launcher"
+SHORTCUT_ID = "gesture-launch"
 BASE_SCHEMA = "org.gnome.settings-daemon.plugins.media-keys"
 
 SHORTCUT_PATH = (
@@ -43,7 +43,7 @@ def is_gnome_shortcut_installed() -> bool:
 
 
 def install_gnome_shortcut() -> bool:
-    """Registers GNOME custom keybinding for Ctrl+Shift+G to run daemon.py."""
+    """Registers GNOME custom keybinding for Ctrl+Shift+G to run gesture_launch_service.py."""
     try:
         shortcuts = _get_custom_shortcuts()
         if SHORTCUT_PATH not in shortcuts:
@@ -61,11 +61,11 @@ def install_gnome_shortcut() -> bool:
 
         # Set shortcut details
         subprocess.run(
-            ["gsettings", "set", CUSTOM_SCHEMA, "name", "Gesture Launcher"],
+            ["gsettings", "set", CUSTOM_SCHEMA, "name", "Gesture Launch"],
             check=True,
         )
 
-        command = f"{PYTHON} {DAEMON_SCRIPT}"
+        command = f"{PYTHON} {SERVICE_SCRIPT}"
         subprocess.run(
             ["gsettings", "set", CUSTOM_SCHEMA, "command", command],
             check=True,

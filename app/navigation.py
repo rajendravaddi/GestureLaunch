@@ -6,9 +6,9 @@ if TYPE_CHECKING:
 
 
 class PageIndex(IntEnum):
-    SETTINGS = 0
-    APPLICATIONS = 1
-    APPLICATION_DETAILS = 2
+    APPLICATIONS = 0
+    APPLICATION_DETAILS = 1
+    SETTINGS = 2
     HELP = 3
 
 

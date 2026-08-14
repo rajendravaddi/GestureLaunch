@@ -34,6 +34,7 @@ class ApplicationGrid(QWidget):
         self.container.setStyleSheet("background: transparent;")
         self.grid_layout.setContentsMargins(0, 0, 0, 0)
         self.grid_layout.setSpacing(12)
+        self.grid_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         self.empty_label.setText("No applications found matching your criteria.")
         self.empty_label.setObjectName("Subtitle")

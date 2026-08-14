@@ -29,6 +29,7 @@ class ApplicationCard(QFrame):
     def _configure_widgets(self) -> None:
         self.setObjectName("CardFrame")
         self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setFixedHeight(90)
 
         self.icon_label.setFixedSize(48, 48)
         self.icon_label.setScaledContents(True)

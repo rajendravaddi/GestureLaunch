@@ -1,8 +1,8 @@
-/* Gesture Launcher Main Stylesheet (Modern GNOME / LibAdwaita Aesthetic) */
+/* Gesture Launcher Main Stylesheet (Modern Light Aesthetic) */
 
 QMainWindow, QWidget {
-    background-color: #1e1e2e;
-    color: #cdd6f4;
+    background-color: #f8f9fa;
+    color: #212529;
     font-family: "Ubuntu", "Inter", "Segoe UI", sans-serif;
     font-size: 14px;
 }
@@ -11,107 +11,135 @@ QMainWindow, QWidget {
 QLabel#HeaderTitle {
     font-size: 24px;
     font-weight: bold;
-    color: #f5e0dc;
+    color: #1e293b;
 }
 
 QLabel#Subtitle {
     font-size: 13px;
-    color: #a6adc8;
+    color: #64748b;
 }
 
 QLabel#SectionTitle {
     font-size: 16px;
     font-weight: bold;
-    color: #89b4fa;
+    color: #2563eb;
 }
 
 /* Cards & Frames */
 QFrame#CardFrame {
-    background-color: #24273a;
-    border: 1px solid #363a4f;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 12px;
 }
 
 QFrame#CardFrame:hover {
-    border: 1px solid #89b4fa;
-    background-color: #2a2e45;
+    border: 1px solid #3b82f6;
+    background-color: #f8fafc;
 }
 
 /* Buttons */
 QPushButton {
-    background-color: #313244;
-    color: #cdd6f4;
-    border: 1px solid #45475a;
+    background-color: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
     padding: 8px 16px;
     font-weight: 500;
 }
 
 QPushButton:hover {
-    background-color: #45475a;
-    border: 1px solid #585b70;
+    background-color: #e2e8f0;
+    border: 1px solid #94a3b8;
+    color: #0f172a;
 }
 
 QPushButton:pressed {
-    background-color: #585b70;
+    background-color: #cbd5e1;
 }
 
 QPushButton#PrimaryButton {
-    background-color: #89b4fa;
-    color: #11111b;
+    background-color: #2563eb;
+    color: #ffffff;
     border: none;
     font-weight: bold;
 }
 
 QPushButton#PrimaryButton:hover {
-    background-color: #b4befe;
+    background-color: #1d4ed8;
 }
 
 QPushButton#DangerButton {
-    background-color: #f38ba8;
-    color: #11111b;
+    background-color: #ef4444;
+    color: #ffffff;
     border: none;
     font-weight: bold;
 }
 
 QPushButton#DangerButton:hover {
-    background-color: #eba0ac;
+    background-color: #dc2626;
 }
 
 QPushButton#FilterButton {
-    background-color: #24273a;
-    color: #a6adc8;
-    border: 1px solid #363a4f;
+    background-color: #ffffff;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
     border-radius: 16px;
     padding: 6px 14px;
 }
 
 QPushButton#FilterButton:checked {
-    background-color: #89b4fa;
-    color: #11111b;
-    border: 1px solid #89b4fa;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: 1px solid #2563eb;
     font-weight: bold;
 }
 
-/* Inputs & Search */
-QLineEdit {
-    background-color: #181825;
-    color: #cdd6f4;
-    border: 1px solid #363a4f;
+/* Inputs & Search & Dropdowns */
+QLineEdit, QComboBox {
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
     padding: 8px 12px;
-    selection-background-color: #89b4fa;
+    selection-background-color: #3b82f6;
+    selection-color: #ffffff;
 }
 
-QLineEdit:focus {
-    border: 1px solid #89b4fa;
+QLineEdit:focus, QComboBox:focus, QComboBox:on {
+    border: 1px solid #2563eb;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 24px;
+    border-left: none;
+}
+
+QComboBox::down-arrow {
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #64748b;
+    margin-right: 8px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+    selection-background-color: #e2e8f0;
+    selection-color: #2563eb;
+    padding: 4px;
+    outline: 0;
 }
 
 /* Status Badges */
 QLabel#BadgeConfigured {
-    background-color: #a6e3a1;
-    color: #11111b;
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
     border-radius: 10px;
     padding: 2px 10px;
     font-size: 11px;
@@ -119,8 +147,9 @@ QLabel#BadgeConfigured {
 }
 
 QLabel#BadgeEmpty {
-    background-color: #45475a;
-    color: #bac2de;
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
     padding: 2px 10px;
     font-size: 11px;
@@ -134,19 +163,19 @@ QScrollArea {
 
 QScrollBar:vertical {
     border: none;
-    background: #181825;
+    background: #f1f5f9;
     width: 8px;
     border-radius: 4px;
 }
 
 QScrollBar::handle:vertical {
-    background: #45475a;
+    background: #cbd5e1;
     border-radius: 4px;
     min-height: 20px;
 }
 
 QScrollBar::handle:vertical:hover {
-    background: #585b70;
+    background: #94a3b8;
 }
 
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {

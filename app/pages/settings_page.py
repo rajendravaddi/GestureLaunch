@@ -50,7 +50,7 @@ class SettingsPage(QWidget):
         self.service_toggle = ToggleSwitch()
 
         # Navigation Action Button
-        self.continue_button = QPushButton()
+        self.back_button = QPushButton()
 
     def _configure_widgets(self) -> None:
         self.title_label.setText("Settings")
@@ -68,8 +68,8 @@ class SettingsPage(QWidget):
 
         self.shortcut_badge.setText("Ctrl + Shift + G")
         self.shortcut_badge.setStyleSheet(
-            "background-color: #313244; color: #89b4fa; font-weight: bold; "
-            "font-size: 15px; padding: 8px 16px; border-radius: 8px; border: 1px solid #45475a;"
+            "background-color: #f1f5f9; color: #2563eb; font-weight: bold; "
+            "font-size: 15px; padding: 8px 16px; border-radius: 8px; border: 1px solid #cbd5e1;"
         )
 
         self.service_card.setObjectName("CardFrame")
@@ -78,20 +78,24 @@ class SettingsPage(QWidget):
         self.service_card_desc.setText("Enable or disable system-wide custom keyboard shortcut integration.")
         self.service_card_desc.setObjectName("Subtitle")
 
-        self.continue_button.setText("Continue to Applications →")
-        self.continue_button.setObjectName("PrimaryButton")
-        self.continue_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.back_button.setText("← Back to Applications")
+        self.back_button.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def _create_layouts(self) -> None:
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(32, 32, 32, 32)
         main_layout.setSpacing(24)
 
-        # Header
+        # Header (Title on left, Back button on right)
+        header_section = QHBoxLayout()
         header_box = QVBoxLayout()
         header_box.setSpacing(4)
         header_box.addWidget(self.title_label)
         header_box.addWidget(self.subtitle_label)
+
+        header_section.addLayout(header_box)
+        header_section.addStretch()
+        header_section.addWidget(self.back_button)
 
         # Shortcut Card Layout
         shortcut_layout = QVBoxLayout(self.shortcut_card)
@@ -118,20 +122,14 @@ class SettingsPage(QWidget):
         service_layout.addLayout(service_info_box, 1)
         service_layout.addWidget(self.service_toggle, 0, Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
 
-        # Action layout
-        action_layout = QHBoxLayout()
-        action_layout.addStretch()
-        action_layout.addWidget(self.continue_button)
-
-        main_layout.addLayout(header_box)
+        main_layout.addLayout(header_section)
         main_layout.addWidget(self.shortcut_card)
         main_layout.addWidget(self.service_card)
-        main_layout.addLayout(action_layout)
         main_layout.addStretch()
 
     def _create_connections(self) -> None:
         self.service_toggle.toggledSignal.connect(self._on_service_toggled)
-        self.continue_button.clicked.connect(self._on_continue_clicked)
+        self.back_button.clicked.connect(self._on_back_clicked)
 
     def _load_data(self) -> None:
         # Load current GNOME custom keybinding status
@@ -144,6 +142,6 @@ class SettingsPage(QWidget):
         else:
             remove_gnome_shortcut()
 
-    def _on_continue_clicked(self) -> None:
+    def _on_back_clicked(self) -> None:
         if self.nav_controller:
             self.nav_controller.go_to_applications()

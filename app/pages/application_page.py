@@ -40,6 +40,7 @@ class ApplicationPage(QWidget):
         self._load_data()
 
     def _create_widgets(self) -> None:
+        self.header_title = QLabel()
         self.back_button = QPushButton()
 
         # Header Info Card
@@ -55,12 +56,20 @@ class ApplicationPage(QWidget):
         self.canvas = GestureCanvas()
 
         # Control Action Buttons
+        self.create_button = QPushButton()
         self.preview_button = QPushButton()
-        self.clear_button = QPushButton()
-        self.save_button = QPushButton()
+        self.edit_button = QPushButton()
         self.delete_button = QPushButton()
+        self.cancel_button = QPushButton()
+        self.save_button = QPushButton()
+
+        self._is_editing = False
+        self._is_creating = False
 
     def _configure_widgets(self) -> None:
+        self.header_title.setText("Application Info")
+        self.header_title.setObjectName("HeaderTitle")
+
         self.back_button.setText("← Back to Applications")
         self.back_button.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -68,26 +77,33 @@ class ApplicationPage(QWidget):
         self.app_icon_label.setFixedSize(64, 64)
         self.app_icon_label.setScaledContents(True)
 
-        self.app_name_label.setObjectName("HeaderTitle")
+        self.app_name_label.setObjectName("SectionTitle")
         self.app_exec_label.setObjectName("Subtitle")
 
         self.studio_card.setObjectName("CardFrame")
         self.studio_title.setText("Gesture Studio")
         self.studio_title.setObjectName("SectionTitle")
 
-        self.preview_button.setText("▶ Play Preview")
+        self.create_button.setText("✏ Create Gesture")
+        self.create_button.setObjectName("PrimaryButton")
+        self.create_button.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.preview_button.setText("▶ Preview")
         self.preview_button.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        self.clear_button.setText("🧹 Clear Canvas")
-        self.clear_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.edit_button.setText("✏ Edit")
+        self.edit_button.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        self.save_button.setText("💾 Save Gesture")
-        self.save_button.setObjectName("PrimaryButton")
-        self.save_button.setCursor(Qt.CursorShape.PointingHandCursor)
-
-        self.delete_button.setText("🗑 Delete Gesture")
+        self.delete_button.setText("🗑 Delete")
         self.delete_button.setObjectName("DangerButton")
         self.delete_button.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.cancel_button.setText("❌ Cancel")
+        self.cancel_button.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.save_button.setText("💾 Save")
+        self.save_button.setObjectName("PrimaryButton")
+        self.save_button.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def _create_layouts(self) -> None:
         main_layout = QVBoxLayout(self)
@@ -96,8 +112,9 @@ class ApplicationPage(QWidget):
 
         # Top Bar
         top_layout = QHBoxLayout()
-        top_layout.addWidget(self.back_button)
+        top_layout.addWidget(self.header_title)
         top_layout.addStretch()
+        top_layout.addWidget(self.back_button)
 
         # Header Info Card Layout
         header_layout = QHBoxLayout(self.header_card)
@@ -123,10 +140,13 @@ class ApplicationPage(QWidget):
         # Action Buttons Layout
         action_layout = QHBoxLayout()
         action_layout.setSpacing(12)
+
+        action_layout.addWidget(self.create_button)
         action_layout.addWidget(self.preview_button)
-        action_layout.addWidget(self.clear_button)
         action_layout.addStretch()
+        action_layout.addWidget(self.edit_button)
         action_layout.addWidget(self.delete_button)
+        action_layout.addWidget(self.cancel_button)
         action_layout.addWidget(self.save_button)
 
         studio_layout.addLayout(action_layout)
@@ -137,10 +157,14 @@ class ApplicationPage(QWidget):
 
     def _create_connections(self) -> None:
         self.back_button.clicked.connect(self._on_back_clicked)
+        self.create_button.clicked.connect(self._start_creating)
         self.preview_button.clicked.connect(self.canvas.play_preview)
-        self.clear_button.clicked.connect(self.canvas.clear)
-        self.save_button.clicked.connect(self._on_save_gesture)
+        self.edit_button.clicked.connect(self._start_editing)
         self.delete_button.clicked.connect(self._on_delete_gesture)
+        self.cancel_button.clicked.connect(self._on_cancel)
+        self.save_button.clicked.connect(self._on_save_gesture)
+
+        self.canvas.gestureRecorded.connect(self._on_gesture_recorded)
 
     def _load_data(self) -> None:
         pass
@@ -163,6 +187,9 @@ class ApplicationPage(QWidget):
             fallback = QIcon.fromTheme("application-x-executable")
             self.app_icon_label.setPixmap(fallback.pixmap(64, 64))
 
+        self._is_editing = False
+        self._is_creating = False
+
         # Check existing gesture
         gesture = None
         if self.gesture_service:
@@ -172,14 +199,73 @@ class ApplicationPage(QWidget):
             self.badge_label.setText("✓ Gesture Configured")
             self.badge_label.setObjectName("BadgeConfigured")
             self.canvas.set_strokes(gesture.strokes)
-            self.delete_button.show()
+            self.canvas.readonly = True
+            self._show_existing_gesture_controls()
         else:
             self.badge_label.setText("No Gesture")
             self.badge_label.setObjectName("BadgeEmpty")
             self.canvas.clear()
-            self.delete_button.hide()
+            self.canvas.readonly = True
+            self._show_initial_no_gesture_controls()
 
         self.badge_label.setStyle(self.badge_label.style())
+
+    def _show_initial_no_gesture_controls(self) -> None:
+        """Initial state for app without gesture: shows Create Gesture button."""
+        self.create_button.show()
+        self.preview_button.hide()
+        self.edit_button.hide()
+        self.delete_button.hide()
+        self.cancel_button.hide()
+        self.save_button.hide()
+
+    def _show_existing_gesture_controls(self) -> None:
+        """Initial state for app with gesture: shows Preview, Edit, Delete buttons."""
+        self.create_button.hide()
+        self.preview_button.show()
+        self.edit_button.show()
+        self.delete_button.show()
+        self.cancel_button.hide()
+        self.save_button.hide()
+
+    def _start_creating(self) -> None:
+        """User clicked 'Create Gesture'."""
+        self._is_creating = True
+        self.canvas.clear()
+        self.canvas.readonly = False
+
+        self.create_button.hide()
+        self.preview_button.hide()
+        self.edit_button.hide()
+        self.delete_button.hide()
+        self.cancel_button.show()
+        self.save_button.hide()
+
+    def _start_editing(self) -> None:
+        """User clicked 'Edit'."""
+        self._is_editing = True
+        self.canvas.clear()  # Clears current canvas so user can draw a new gesture
+        self.canvas.readonly = False
+
+        self.create_button.hide()
+        self.preview_button.hide()
+        self.edit_button.hide()
+        self.delete_button.hide()
+        self.cancel_button.show()
+        self.save_button.hide()
+
+    def _on_gesture_recorded(self, strokes) -> None:
+        """Fired after user finishes drawing a gesture on canvas."""
+        if (self._is_creating or self._is_editing) and strokes:
+            self.cancel_button.show()
+            self.save_button.show()
+
+    def _on_cancel(self) -> None:
+        """Cancels creation/editing and restores previous gesture or state."""
+        self._is_creating = False
+        self._is_editing = False
+        if self.current_app:
+            self.load_application(self.current_app.id)
 
     def _on_save_gesture(self) -> None:
         if not self.current_app or not self.gesture_service:

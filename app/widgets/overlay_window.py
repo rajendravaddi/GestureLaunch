@@ -60,7 +60,7 @@ class GestureOverlayWindow(QWidget):
             norm_x = event.position().x() / w
             norm_y = event.position().y() / h
 
-            self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y, timestamp=time.time())])
+            self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y)])
             self.strokes.append(self.current_stroke)
             self.update()
 
@@ -72,10 +72,10 @@ class GestureOverlayWindow(QWidget):
             norm_y = max(0.0, min(1.0, event.position().y() / h))
 
             if not self.current_stroke:
-                self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y, timestamp=time.time())])
+                self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y)])
                 self.strokes.append(self.current_stroke)
             else:
-                self.current_stroke.points.append(Point(x=norm_x, y=norm_y, timestamp=time.time()))
+                self.current_stroke.points.append(Point(x=norm_x, y=norm_y))
             self.update()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
@@ -111,7 +111,7 @@ class GestureOverlayWindow(QWidget):
         painter.drawText(
             banner_rect,
             Qt.AlignmentFlag.AlignCenter,
-            "✨ Gesture Launcher — Draw Gesture on Screen (ESC to Cancel)",
+            "✨ Gesture Launch — Draw Gesture on Screen (ESC to Cancel)",
         )
 
         w, h = self.width(), self.height()

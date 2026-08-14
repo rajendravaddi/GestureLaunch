@@ -21,7 +21,6 @@ class HelpPage(QWidget):
         self._configure_widgets()
         self._create_layouts()
         self._create_connections()
-        self._load_data()
 
     def _create_widgets(self) -> None:
         self.title_label = QLabel()
@@ -65,10 +64,10 @@ class HelpPage(QWidget):
         for card in (self.card_overview, self.card_steps, self.card_tips, self.card_faq):
             card.setObjectName("CardFrame")
 
-        self.title_overview.setText("What is Gesture Launcher?")
+        self.title_overview.setText("What is Gesture Launch?")
         self.title_overview.setObjectName("SectionTitle")
         self.body_overview.setText(
-            "Gesture Launcher allows Ubuntu / Linux desktop users to instantly launch installed applications "
+            "Gesture Launch allows Ubuntu / Linux desktop users to instantly launch installed applications "
             "using touchpad or mouse gesture strokes triggered via a global shortcut."
         )
         self.body_overview.setWordWrap(True)
@@ -77,7 +76,7 @@ class HelpPage(QWidget):
         self.title_steps.setObjectName("SectionTitle")
         self.body_steps.setText(
             "1. Navigate to Settings and configure your global activation key (Default: Super+Shift+G).\n"
-            "2. Ensure the Gesture Recognition Daemon toggle is turned ON.\n"
+            "2. Ensure the Gesture Recognition Service toggle is turned ON.\n"
             "3. Select any application from the Applications grid.\n"
             "4. Draw a distinctive gesture template on the Gesture Studio canvas and hit 'Save Gesture'.\n"
             "5. Activate your shortcut anywhere on the desktop to draw your gesture and launch the app!"
@@ -97,10 +96,10 @@ class HelpPage(QWidget):
         self.title_faq.setObjectName("SectionTitle")
         self.body_faq.setText(
             "Q: Why isn't my application showing up?\n"
-            "A: Gesture Launcher automatically scans standard system locations (/usr/share/applications). "
+            "A: Gesture Launch automatically scans standard system locations (/usr/share/applications). "
             "Custom apps installed elsewhere may need a valid desktop entry file.\n\n"
             "Q: How do I minimize or keep the service running?\n"
-            "A: The background daemon runs silently according to your settings toggle."
+            "A: The background service runs silently according to your settings toggle."
         )
         self.body_faq.setWordWrap(True)
 
@@ -149,9 +148,6 @@ class HelpPage(QWidget):
 
     def _create_connections(self) -> None:
         self.back_button.clicked.connect(self._on_back_clicked)
-
-    def _load_data(self) -> None:
-        pass
 
     def _on_back_clicked(self) -> None:
         if self.nav_controller:

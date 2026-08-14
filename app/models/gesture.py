@@ -5,11 +5,10 @@ from typing import List, Tuple
 
 @dataclass
 class Point:
-    """Represents a 2D normalized coordinate point (x, y) with timestamp."""
+    """Represents a 2D normalized coordinate point (x, y)."""
 
     x: float
     y: float
-    timestamp: float = field(default_factory=time.time)
 
 
 @dataclass

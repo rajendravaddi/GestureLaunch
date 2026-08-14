@@ -1,4 +1,4 @@
-/* Gesture Launcher Main Stylesheet (Modern Light Aesthetic) */
+/* Gesture Launch Main Stylesheet (Modern Light Aesthetic) */
 
 QMainWindow, QWidget {
     background-color: #f8f9fa;

@@ -10,7 +10,7 @@ class GestureRepository:
 
     def __init__(self, data_path: Optional[Path] = None) -> None:
         if data_path is None:
-            data_path = Path.home() / ".config" / "gesture-launcher" / "gestures.json"
+            data_path = Path.home() / ".config" / "gesture-launch" / "gestures.json"
         self.data_path = data_path
         self.data_path.parent.mkdir(parents=True, exist_ok=True)
         self._gestures: Dict[str, Gesture] = {}
@@ -29,7 +29,6 @@ class GestureRepository:
                             Point(
                                 x=pt["x"],
                                 y=pt["y"],
-                                timestamp=pt.get("timestamp", 0.0),
                             )
                             for pt in stroke_data.get("points", [])
                         ]
@@ -59,7 +58,7 @@ class GestureRepository:
                 "strokes": [
                     {
                         "points": [
-                            {"x": pt.x, "y": pt.y, "timestamp": pt.timestamp}
+                            {"x": pt.x, "y": pt.y}
                             for pt in stroke.points
                         ]
                     }

@@ -29,7 +29,6 @@ class GestureRepository:
                             Point(
                                 x=pt["x"],
                                 y=pt["y"],
-                                timestamp=pt.get("timestamp", 0.0),
                             )
                             for pt in stroke_data.get("points", [])
                         ]
@@ -59,7 +58,7 @@ class GestureRepository:
                 "strokes": [
                     {
                         "points": [
-                            {"x": pt.x, "y": pt.y, "timestamp": pt.timestamp}
+                            {"x": pt.x, "y": pt.y}
                             for pt in stroke.points
                         ]
                     }

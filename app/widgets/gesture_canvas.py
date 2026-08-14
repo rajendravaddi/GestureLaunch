@@ -69,7 +69,7 @@ class GestureCanvas(QWidget):
         norm_x = event.position().x() / w
         norm_y = event.position().y() / h
 
-        self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y, timestamp=time.time())])
+        self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y)])
         self.strokes.append(self.current_stroke)
         self.update()
 
@@ -81,7 +81,7 @@ class GestureCanvas(QWidget):
         norm_x = max(0.0, min(1.0, event.position().x() / w))
         norm_y = max(0.0, min(1.0, event.position().y() / h))
 
-        self.current_stroke.points.append(Point(x=norm_x, y=norm_y, timestamp=time.time()))
+        self.current_stroke.points.append(Point(x=norm_x, y=norm_y))
         self.update()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:

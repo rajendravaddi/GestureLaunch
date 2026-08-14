@@ -38,7 +38,6 @@ class ApplicationPage(QWidget):
         self._configure_widgets()
         self._create_layouts()
         self._create_connections()
-        self._load_data()
 
     def _create_widgets(self) -> None:
         self.header_title = QLabel()
@@ -189,9 +188,6 @@ class ApplicationPage(QWidget):
         self.warning_retry_button.clicked.connect(self._on_redraw_clicked)
 
         self.canvas.gestureRecorded.connect(self._on_gesture_recorded)
-
-    def _load_data(self) -> None:
-        pass
 
     def load_application(self, app_id: str) -> None:
         if not self.application_service:

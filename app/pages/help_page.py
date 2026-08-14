@@ -21,7 +21,6 @@ class HelpPage(QWidget):
         self._configure_widgets()
         self._create_layouts()
         self._create_connections()
-        self._load_data()
 
     def _create_widgets(self) -> None:
         self.title_label = QLabel()
@@ -149,9 +148,6 @@ class HelpPage(QWidget):
 
     def _create_connections(self) -> None:
         self.back_button.clicked.connect(self._on_back_clicked)
-
-    def _load_data(self) -> None:
-        pass
 
     def _on_back_clicked(self) -> None:
         if self.nav_controller:

@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 from app.models.application import Application
 from app.services.application_service import ApplicationService
 from app.services.gesture_service import GestureService
+from app.utils.gesture_matcher import DollarOneRecognizer
 from app.widgets.gesture_canvas import GestureCanvas
 
 
@@ -55,6 +56,11 @@ class ApplicationPage(QWidget):
         self.studio_title = QLabel()
         self.canvas = GestureCanvas()
 
+        # Warning Banner (Inline Alert)
+        self.warning_banner = QFrame()
+        self.warning_label = QLabel()
+        self.warning_retry_button = QPushButton()
+
         # Control Action Buttons
         self.create_button = QPushButton()
         self.preview_button = QPushButton()
@@ -83,6 +89,14 @@ class ApplicationPage(QWidget):
         self.studio_card.setObjectName("CardFrame")
         self.studio_title.setText("Gesture Studio")
         self.studio_title.setObjectName("SectionTitle")
+
+        # Warning Banner setup
+        self.warning_banner.setObjectName("WarningBanner")
+        self.warning_label.setObjectName("WarningBannerText")
+        self.warning_label.setWordWrap(True)
+        self.warning_retry_button.setText("🔄 Redraw")
+        self.warning_retry_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.warning_banner.hide()
 
         self.create_button.setText("✏ Create Gesture")
         self.create_button.setObjectName("PrimaryButton")
@@ -137,6 +151,15 @@ class ApplicationPage(QWidget):
         studio_layout.addWidget(self.studio_title)
         studio_layout.addWidget(self.canvas, 1)
 
+        # Warning Banner Layout
+        warning_layout = QHBoxLayout(self.warning_banner)
+        warning_layout.setContentsMargins(8, 8, 8, 8)
+        warning_layout.setSpacing(12)
+        warning_layout.addWidget(self.warning_label, 1)
+        warning_layout.addWidget(self.warning_retry_button, 0, Qt.AlignmentFlag.AlignVCenter)
+
+        studio_layout.addWidget(self.warning_banner)
+
         # Action Buttons Layout
         action_layout = QHBoxLayout()
         action_layout.setSpacing(12)
@@ -163,6 +186,7 @@ class ApplicationPage(QWidget):
         self.delete_button.clicked.connect(self._on_delete_gesture)
         self.cancel_button.clicked.connect(self._on_cancel)
         self.save_button.clicked.connect(self._on_save_gesture)
+        self.warning_retry_button.clicked.connect(self._on_redraw_clicked)
 
         self.canvas.gestureRecorded.connect(self._on_gesture_recorded)
 
@@ -189,6 +213,7 @@ class ApplicationPage(QWidget):
 
         self._is_editing = False
         self._is_creating = False
+        self.warning_banner.hide()
 
         # Check existing gesture
         gesture = None
@@ -212,6 +237,7 @@ class ApplicationPage(QWidget):
 
     def _show_initial_no_gesture_controls(self) -> None:
         """Initial state for app without gesture: shows Create Gesture button."""
+        self.warning_banner.hide()
         self.create_button.show()
         self.preview_button.hide()
         self.edit_button.hide()
@@ -221,6 +247,7 @@ class ApplicationPage(QWidget):
 
     def _show_existing_gesture_controls(self) -> None:
         """Initial state for app with gesture: shows Preview, Edit, Delete buttons."""
+        self.warning_banner.hide()
         self.create_button.hide()
         self.preview_button.show()
         self.edit_button.show()
@@ -231,6 +258,7 @@ class ApplicationPage(QWidget):
     def _start_creating(self) -> None:
         """User clicked 'Create Gesture'."""
         self._is_creating = True
+        self.warning_banner.hide()
         self.canvas.clear()
         self.canvas.readonly = False
 
@@ -244,6 +272,7 @@ class ApplicationPage(QWidget):
     def _start_editing(self) -> None:
         """User clicked 'Edit'."""
         self._is_editing = True
+        self.warning_banner.hide()
         self.canvas.clear()  # Clears current canvas so user can draw a new gesture
         self.canvas.readonly = False
 
@@ -254,8 +283,16 @@ class ApplicationPage(QWidget):
         self.cancel_button.show()
         self.save_button.hide()
 
+    def _on_redraw_clicked(self) -> None:
+        """User clicked Redraw on warning banner."""
+        self.warning_banner.hide()
+        self.canvas.clear()
+        self.canvas.readonly = False
+        self.save_button.hide()
+
     def _on_gesture_recorded(self, strokes) -> None:
         """Fired after user finishes drawing a gesture on canvas."""
+        self.warning_banner.hide()
         if (self._is_creating or self._is_editing) and strokes:
             self.cancel_button.show()
             self.save_button.show()
@@ -264,6 +301,7 @@ class ApplicationPage(QWidget):
         """Cancels creation/editing and restores previous gesture or state."""
         self._is_creating = False
         self._is_editing = False
+        self.warning_banner.hide()
         if self.current_app:
             self.load_application(self.current_app.id)
 
@@ -274,6 +312,30 @@ class ApplicationPage(QWidget):
         if not self.canvas.strokes:
             return
 
+        # Check for similar existing gestures across other applications
+        all_gestures = self.gesture_service.get_all_gestures()
+        other_gestures = [g for g in all_gestures if g.app_id != self.current_app.id]
+
+        matched_gesture, score = DollarOneRecognizer.recognize(
+            candidate_strokes=self.canvas.strokes,
+            templates=other_gestures,
+        )
+
+        if score > 0.50 and matched_gesture:
+            matched_app_name = matched_gesture.name or matched_gesture.app_id
+            if self.application_service:
+                app_obj = self.application_service.get_application_by_id(matched_gesture.app_id)
+                if app_obj and app_obj.name:
+                    matched_app_name = app_obj.name
+
+            confidence_pct = int(score * 100)
+            self.warning_label.setText(
+                f"⚠️  Similar Gesture Detected! This shape is {confidence_pct}% similar to the gesture for '{matched_app_name}'."
+            )
+            self.warning_banner.show()
+            return
+
+        self.warning_banner.hide()
         self.gesture_service.save_gesture(
             app_id=self.current_app.id,
             app_name=self.current_app.name,

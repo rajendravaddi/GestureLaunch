@@ -62,7 +62,7 @@ class GestureCanvas(QWidget):
             self._playback_timer.stop()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        if self.readonly or event.button() != Qt.MouseButton.LeftButton:
+        if self.readonly or event.button() != Qt.MouseButton.LeftButton or self.strokes:
             return
 
         w, h = self.width(), self.height()
@@ -90,6 +90,7 @@ class GestureCanvas(QWidget):
 
         if self.current_stroke:
             self.current_stroke = None
+            self.readonly = True  # Enforce single stroke limit per drawing session
             self.gestureRecorded.emit(self.strokes)
             self.update()
 

@@ -14,6 +14,9 @@ class GestureService:
     def get_gesture_for_app(self, app_id: str) -> Optional[Gesture]:
         return self.repository.get_by_app_id(app_id)
 
+    def get_all_gestures(self) -> list[Gesture]:
+        return self.repository.get_all()
+
     def save_gesture(self, app_id: str, app_name: str, strokes: list[Stroke]) -> Gesture:
         existing = self.repository.get_by_app_id(app_id)
         if existing:

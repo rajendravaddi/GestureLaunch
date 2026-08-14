@@ -53,9 +53,6 @@ def main() -> None:
         app.quit()
 
     overlay.gestureCaptured.connect(on_gesture_captured)
-
-    # Show transparent overlay window
-    overlay.show()
     overlay.activate_overlay()
 
     sys.exit(app.exec())

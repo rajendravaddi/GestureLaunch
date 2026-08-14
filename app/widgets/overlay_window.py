@@ -2,7 +2,7 @@ import time
 from typing import List, Optional
 
 from PySide6.QtCore import QPointF, Qt, Signal
-from PySide6.QtGui import QColor, QKeyEvent, QMouseEvent, QPaintEvent, QPainter, QPainterPath, QPen
+from PySide6.QtGui import QColor, QCursor, QKeyEvent, QMouseEvent, QPaintEvent, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import QWidget
 
 from app.models.gesture import Point, Stroke
@@ -22,6 +22,7 @@ class GestureOverlayWindow(QWidget):
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, False)
+        self.setMouseTracking(False)
 
         self.strokes: List[Stroke] = []
         self.current_stroke: Optional[Stroke] = None
@@ -31,7 +32,7 @@ class GestureOverlayWindow(QWidget):
         """Shows fullscreen gesture canvas overlay."""
         self.strokes = []
         self.current_stroke = None
-        self.is_drawing = True
+        self.is_drawing = False
 
         # Position over active screen
         screen = self.screen()
@@ -55,28 +56,48 @@ class GestureOverlayWindow(QWidget):
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
+            self.strokes = []
+            self.current_stroke = None
             self.is_drawing = True
+
+            # Use exact current global pointer position to bypass stale event coordinates on double-tap
+            global_pos = QCursor.pos()
+            local_pos = self.mapFromGlobal(global_pos)
+
             w, h = self.width(), self.height()
-            norm_x = event.position().x() / w
-            norm_y = event.position().y() / h
+            norm_x = max(0.0, min(1.0, local_pos.x() / w))
+            norm_y = max(0.0, min(1.0, local_pos.y() / h))
 
             self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y)])
             self.strokes.append(self.current_stroke)
             self.update()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        # If drawing mode is active, append points as mouse/touchpad moves
-        if self.is_drawing:
-            w, h = self.width(), self.height()
-            norm_x = max(0.0, min(1.0, event.position().x() / w))
-            norm_y = max(0.0, min(1.0, event.position().y() / h))
+        # Append points only if user is actively holding LeftButton while drawing
+        if not self.is_drawing or not (event.buttons() & Qt.MouseButton.LeftButton) or not self.current_stroke:
+            return
 
-            if not self.current_stroke:
-                self.current_stroke = Stroke(points=[Point(x=norm_x, y=norm_y)])
-                self.strokes.append(self.current_stroke)
-            else:
-                self.current_stroke.points.append(Point(x=norm_x, y=norm_y))
-            self.update()
+        w, h = self.width(), self.height()
+        norm_x = max(0.0, min(1.0, event.position().x() / w))
+        norm_y = max(0.0, min(1.0, event.position().y() / h))
+
+        if self.current_stroke.points:
+            last_pt = self.current_stroke.points[-1]
+            dist_sq = (norm_x - last_pt.x) ** 2 + (norm_y - last_pt.y) ** 2
+            
+            # If 2nd point registers a huge instantaneous jump (> 0.15 normalized screen dist)
+            # caused by stale event coordinates on double-tap, reset starting point to actual position
+            if len(self.current_stroke.points) == 1 and dist_sq > 0.0225:
+                self.current_stroke.points[0] = Point(x=norm_x, y=norm_y)
+                self.update()
+                return
+
+            # Ignore tiny touchpad hardware noise
+            if dist_sq < 0.000004:
+                return
+
+        self.current_stroke.points.append(Point(x=norm_x, y=norm_y))
+        self.update()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.MouseButton.LeftButton and self.is_drawing:

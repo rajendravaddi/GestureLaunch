@@ -253,8 +253,10 @@ Application Launches & Service Exits
 ## 15. Limitations and Technical Constraints
 
 - **GNOME Dependency**: Automated keybinding installation (`install_gnome_shortcut()`) relies on GNOME `gsettings`.
+- **Snapcraft Packaging & Confinement Restrictions**: Packaging the application using Snapcraft under strict confinement isolates the process sandbox. Because Gesture Launch requires discovering system `.desktop` applications from `/usr/share/applications` or `~/.local/share/applications`, invoking `gsettings` to bind host global hotkeys, and launching host binaries as detached subprocesses, strict Snap confinement restricts access to host system paths and prevents spawning host executables.
 - **Single Monitor Geometry**: Overlay geometry attaches to the primary active screen.
 - **Unistroke Algorithm Assumption**: Best recognition performance occurs with continuous single-stroke shapes.
+
 
 ---
 

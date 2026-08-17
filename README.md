@@ -207,11 +207,7 @@ For complete internal details on algorithm implementation, startup sequence, dat
 ## Known Limitations
 
 - **GNOME Desktop Only**: Shortcut registration depends on GNOME `gsettings` (`org.gnome.settings-daemon.plugins.media-keys`). Other desktop environments (KDE, XFCE) require manual shortcut configuration pointing to `gesture_launch_service.py`.
+- **Snapcraft Packaging & Strict Confinement**: Attempts to package the application via Snapcraft encounter strict Snap confinement restrictions. Because GNOME custom shortcut registration (`gsettings`) and application discovery/launching require accessing host system paths (`/usr/share/applications`, `~/.local/share/applications`, `/var/lib/snapd/desktop/applications`) and spawning external host binaries, strict Snap confinement restricts filesystem access and prevents launching host applications.
 - **Single-Screen Overlay Positioning**: `GestureOverlayWindow` positions itself over the active primary screen geometry.
 - **Unistroke Resampling Limit**: Multi-stroke gestures are flattened during recognition, so single continuous strokes yield the best accuracy.
 
----
-
-## License
-
-No explicit license file is currently specified in this repository.

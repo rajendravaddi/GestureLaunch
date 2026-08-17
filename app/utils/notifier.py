@@ -24,13 +24,13 @@ def send_desktop_notification(title: str, message: str, icon_name: str = "gestur
 
 def notify_gesture_matched(app_name: str, confidence: float) -> None:
     """Sends success notification when a gesture matches an application."""
-    title = f"🚀 Launching {app_name}"
+    title = f"Launching {app_name}"
     message = f"Matched gesture template (Confidence: {int(confidence * 100)}%)"
-    send_desktop_notification(title, message, icon_name="application-x-executable")
+    send_desktop_notification(title, message, icon_name="emblem-ok")
 
 
 def notify_gesture_unmatched() -> None:
     """Sends failure notification when no gesture match is found."""
-    title = "❌ No Match Found"
+    title = "No Match Found"
     message = "No application gesture template matched your drawn input."
     send_desktop_notification(title, message, icon_name="dialog-warning")
